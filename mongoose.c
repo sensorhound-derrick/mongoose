@@ -2133,7 +2133,7 @@ MG_INTERNAL int mg_parse_address(const char *str, union socket_address *sa,
   if (sscanf(str, "%u.%u.%u.%u:%u%n", &a, &b, &c, &d, &port, &len) == 5) {
     /* Bind to a specific IPv4 address, e.g. 192.168.1.5:8080 */
     sa->sin.sin_addr.s_addr =
-        htonl(((uint32_t) a << 24) | ((uint32_t) b << 16) | c << 7 | d); /* bug here: should read 'c << 8' */
+        htonl(((uint32_t) a << 24) | ((uint32_t) b << 16) | c << 8 | d);
     sa->sin.sin_port = htons((uint16_t) port);
 #ifdef MG_ENABLE_IPV6
   } else if (sscanf(str, "[%99[^]]]:%u%n", buf, &port, &len) == 2 &&
