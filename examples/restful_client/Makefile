@@ -13,7 +13,7 @@ $(PROG).exe: $(SOURCES)
 cilly: $(SOURCES)
 	mkdir -p build
 	mkdir -p tmp
-	cilly -g -pthread --save-temps=build/ --dotinytracer -I../.. -W -Wall -o cilly_mongoose $(SOURCES) ../../logging.h
+	cilly $(CFLAGS) -DSENSORTRACER --verbose -g --save-temps=build/ --dotinytracer -o cilly_mongoose $(SOURCES)
 
 clean:
 	rm -rf *.gc* *.dSYM *.exe *.obj *.o a.out $(PROG) build/ tmp/ cilly_mongoose out.map procmap.txt

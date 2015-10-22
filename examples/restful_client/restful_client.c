@@ -5,6 +5,10 @@
 
 #include "mongoose.h"
 
+#ifdef SENSORTRACER
+#include "logging.h"
+#endif
+
 /* RESTful server host and request URI */
 static const char *s_target_address = "ajax.googleapis.com:80";
 static const char *s_request = "/ajax/services/search/web?v=1.0&q=cesanta";
@@ -12,6 +16,7 @@ static const char *s_request = "/ajax/services/search/web?v=1.0&q=cesanta";
 static int s_exit_flag = 0;
 
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
+
   struct http_message *hm = (struct http_message *) ev_data;
   int connect_status;
 
@@ -41,6 +46,11 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
 int main(void) {
   struct mg_mgr mgr;
   struct mg_connection *nc;
+
+  #ifdef SENSORTRACER
+  printf("sensortracer\n");
+  sensortracer_init();
+  #endif
 
   mg_mgr_init(&mgr, NULL);
   nc = mg_connect(&mgr, s_target_address, ev_handler);

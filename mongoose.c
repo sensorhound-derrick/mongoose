@@ -1,5 +1,9 @@
 #include "mongoose.h"
+
+/*#ifdef SENSORTRACER
 #include "logging.h"
+#endif*/
+
 #ifdef NS_MODULE_LINES
 #line 1 "src/internal.h"
 /**/
