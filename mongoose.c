@@ -2945,7 +2945,7 @@ MG_INTERNAL struct mg_connection *mg_finish_connect(struct mg_connection *nc,
     if (nc->flags & MG_F_CONNECTING) {
       mg_call(nc, MG_EV_CONNECT, &failure);
     }
-    mg_destroy_conn(nc);
+    //mg_destroy_conn(nc); /* BUG HERE */
     return NULL;
   }
 
