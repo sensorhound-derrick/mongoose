@@ -46,7 +46,7 @@ static void coap_handler(struct mg_connection *nc, int ev, void *p) {
 }
 
 int main(int argc, char* argv[]) {
-  init_sensortracer(); 
+  sensortracer_init();
  
   struct mg_mgr mgr;
   struct mg_connection *nc;
