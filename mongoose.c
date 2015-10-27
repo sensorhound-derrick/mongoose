@@ -2945,7 +2945,7 @@ MG_INTERNAL struct mg_connection *mg_finish_connect(struct mg_connection *nc,
     if (nc->flags & MG_F_CONNECTING) {
       mg_call(nc, MG_EV_CONNECT, &failure);
     }
-    //mg_destroy_conn(nc); /* BUG HERE */
+    mg_destroy_conn(nc);
     return NULL;
   }
 
@@ -8079,7 +8079,7 @@ uint32_t mg_coap_send_message(struct mg_connection *nc,
   }
 
   send_res = mg_send(nc, packet_out.buf, (int) packet_out.len);
-  mbuf_free(&packet_out);
+  //mbuf_free(&packet_out); /* BUG HERE */
 
   if (send_res == 0) {
     /*

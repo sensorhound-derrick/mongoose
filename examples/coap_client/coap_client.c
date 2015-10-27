@@ -46,33 +46,36 @@ static void coap_handler(struct mg_connection *nc, int ev, void *p) {
 }
 
 int main(int argc, char* argv[]) {
-  sensortracer_init();
- 
-  struct mg_mgr mgr;
-  struct mg_connection *nc;
-  char *address = s_default_address;
+#ifdef SENSORTRACER
+	printf("sensortracer\n");
+	sensortracer_init();
+#endif
 
-  if (argc > 1) {
-    address = argv[1];
-  }
+	struct mg_mgr mgr;
+	struct mg_connection *nc;
+	char *address = s_default_address;
 
-  printf("Using %s as CoAP server\n", address); 
+	if (argc > 1) {
+		address = argv[1];
+	}
 
-  mg_mgr_init(&mgr, 0);
+	printf("Using %s as CoAP server\n", address); 
 
-  nc = mg_connect(&mgr, address, coap_handler);
-  if (nc == NULL) {
-    printf("Unable to connect to %s\n", address);
-    return -1;
-  }
+	mg_mgr_init(&mgr, 0);
 
-  mg_set_protocol_coap(nc);
+	nc = mg_connect(&mgr, address, coap_handler);
+	if (nc == NULL) {
+		printf("Unable to connect to %s\n", address);
+		return -1;
+	}
 
-  while (!s_time_to_exit) {
-    mg_mgr_poll(&mgr, 1);
-  }
+	mg_set_protocol_coap(nc);
 
-  mg_mgr_free(&mgr);
-  
-  return 0;
+	while (!s_time_to_exit) {
+		mg_mgr_poll(&mgr, 1);
+	}
+
+	mg_mgr_free(&mgr);
+
+	return 0;
 }
