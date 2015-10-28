@@ -8,6 +8,9 @@
 
 #include "mongoose.h"
 
+#ifdef SENSORTRACER
+#include "logging.h"
+#endif
 static int s_time_to_exit = 0;
 static char* s_default_address = "udp://coap.me:5683";
 
@@ -42,6 +45,10 @@ static void coap_handler(struct mg_connection *nc, int ev, void *p) {
 }
 
 int main(int argc, char* argv[]) {
+  #ifdef SENSORTRACER
+  printf("sensortracer\n");
+  sensortracer_init();
+  #endif
   struct mg_mgr mgr;
   struct mg_connection *nc;
   char *address = s_default_address;
