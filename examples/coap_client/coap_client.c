@@ -43,8 +43,6 @@ static void coap_handler(struct mg_connection *nc, int ev, void *p) {
       s_time_to_exit = 1;
       break;
     }
-    default:
-    	printf("ev = %d\n", ev);
   }
 }
 
@@ -66,8 +64,6 @@ int main(int argc, char* argv[]) {
 		struct mg_mgr mgr;
 		struct mg_connection *nc;
 		memset(&mgr, 0, sizeof(struct mg_mgr));
-		//memset(nc, 0, sizeof(struct mg_connection));
-		printf("starting connection...\n");
 		mg_mgr_init(&mgr, 0);
 
 		nc = mg_connect(&mgr, address, coap_handler);
@@ -82,9 +78,8 @@ int main(int argc, char* argv[]) {
 			mg_mgr_poll(&mgr, 1);
 		}
 		sleep(3);
-
+		s_time_to_exit = 0;
 		mg_mgr_free(&mgr);
-		printf("done\n");
 	}
 
 	return 0;

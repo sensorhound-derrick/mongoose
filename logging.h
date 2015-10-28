@@ -34,7 +34,6 @@ unsigned int sensor_tracer_recordLabel(unsigned int id , unsigned int isPath , u
 	uint16_t label = 0;
 
 	label = label | (id << 3);
-
 	// compress bit is turned off by default.		
 	if (isPath) label = label | 0x04;
 
