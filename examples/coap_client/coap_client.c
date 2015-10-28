@@ -12,6 +12,7 @@
 #include "logging.h"
 #endif
 static int s_time_to_exit = 0;
+static int msg_id = 0;
 static char* s_default_address = "udp://coap.me:5683";
 
 static void coap_handler(struct mg_connection *nc, int ev, void *p) {
@@ -21,7 +22,7 @@ static void coap_handler(struct mg_connection *nc, int ev, void *p) {
       uint32_t res;
 
       memset(&cm, 0, sizeof(cm));
-      cm.msg_id = 1;
+      cm.msg_id = msg_id++;
       cm.msg_type = MG_COAP_MSG_CON;
       printf("Sending CON...\n");
       res = mg_coap_send_message(nc, &cm);
@@ -40,6 +41,8 @@ static void coap_handler(struct mg_connection *nc, int ev, void *p) {
              cm->msg_id);
       s_time_to_exit = 1;
       break;
+    default:
+    	printf("ev = %d\n", ev);
     }
   }
 }
@@ -49,8 +52,6 @@ int main(int argc, char* argv[]) {
   printf("sensortracer\n");
   sensortracer_init();
   #endif
-  struct mg_mgr mgr;
-  struct mg_connection *nc;
   char *address = s_default_address;
 
   if (argc > 1) {
@@ -59,21 +60,29 @@ int main(int argc, char* argv[]) {
 
   printf("Using %s as CoAP server\n", address); 
 
-  mg_mgr_init(&mgr, 0);
+	while(1) {
+		struct mg_mgr mgr;
+		struct mg_connection *nc;
+		printf("starting\n");
+		memcpy(&mgr, 0, sizeof(struct mg_mgr));
+		mg_mgr_init(&mgr, 0);
 
-  nc = mg_connect(&mgr, address, coap_handler);
-  if (nc == NULL) {
-    printf("Unable to connect to %s\n", address);
-    return -1;
+		nc = mg_connect(&mgr, address, coap_handler);
+		if (nc == NULL) {
+			printf("Unable to connect to %s\n", address);
+			return -1;
+		}
+
+		mg_set_protocol_coap(nc);
+
+		while (!s_time_to_exit) {
+			mg_mgr_poll(&mgr, 1);
+		}
+
+		mg_mgr_free(&mgr);
+		sleep(3);
+		printf("done\n");
   }
-
-  mg_set_protocol_coap(nc);
-
-  while (!s_time_to_exit) {
-    mg_mgr_poll(&mgr, 1);
-  }
-
-  mg_mgr_free(&mgr);
   
   return 0;
 }
