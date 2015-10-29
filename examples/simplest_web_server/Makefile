@@ -1,6 +1,6 @@
 PROG = simplest_web_server
 SOURCES = $(PROG).c ../../mongoose.c
-CFLAGS = -W -Wall -I../.. $(CFLAGS_EXTRA)
+CFLAGS = -g -W -Wall -I../.. $(CFLAGS_EXTRA)
 
 all: $(PROG)
 
