@@ -33,7 +33,7 @@ void CFTracerM__StdControl__exit() {
 unsigned int sensor_tracer_recordLabel(unsigned int id , unsigned int isPath , unsigned int isEnd ) {
 	uint16_t label = 0;
 
-	label = label | (id << 3);
+	label = label | (id << 4);
 	// compress bit is turned off by default.		
 	if (isPath) label = label | 0x04;
 
