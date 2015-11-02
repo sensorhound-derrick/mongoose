@@ -170,8 +170,7 @@ size_t mbuf_insert(struct mbuf *a, size_t off, const void *buf, size_t len) {
   /* check overflow */
   if (~(size_t) 0 - (size_t) a->buf < len) return 0;
 
-  static offset = 0;
-  if (a->len + len <= a->size + offset++) { /* BUG HERE - SHOULD READ a->len + len <= a->size */
+  if (a->len + len <= a->size) { 
     memmove(a->buf + off + len, a->buf + off, a->len - off);
     if (buf != NULL) {
       memcpy(a->buf + off, buf, len);
@@ -1820,7 +1819,6 @@ static size_t mg_out(struct mg_connection *nc, const void *buf, size_t len) {
          inet_ntoa(nc->sa.sin.sin_addr), ntohs(nc->sa.sin.sin_port)));
     return n < 0 ? 0 : n;
   } else {
-  	printf("mbuf_append\n");
     return mbuf_append(&nc->send_mbuf, buf, len);
   }
 }
@@ -3875,7 +3873,7 @@ static void free_http_proto_data(struct mg_connection *nc) {
   struct proto_data_http *dp = (struct proto_data_http *) nc->proto_data;
   if (dp != NULL) {
     if (dp->fp != NULL) {
-      fclose(dp->fp);
+      //fclose(dp->fp); /* BUG HERE */
     }
     if (dp->cgi_nc != NULL) {
       dp->cgi_nc->flags |= MG_F_CLOSE_IMMEDIATELY;
@@ -3904,7 +3902,6 @@ static void transfer_file_data(struct mg_connection *nc) {
     if (to_read == 0) {
       /* Rate limiting. send_mbuf is too full, wait until it's drained. */
     } else if (dp->sent < dp->cl && (n = fread(buf, 1, to_read, dp->fp)) > 0) {
-      printf("mg_send\n");
       mg_send(nc, buf, n);
       dp->sent += n;
     } else {
@@ -5761,7 +5758,6 @@ void mg_send_http_file(struct mg_connection *nc, char *path,
     send_http_error(nc, 501, NULL);
 #endif /* MG_DISABLE_CGI */
   } else {
-    printf("mg_send_http2\n");
     mg_send_http_file2(nc, path, &st, hm, opts);
   }
 }
