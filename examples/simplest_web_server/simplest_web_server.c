@@ -1,13 +1,18 @@
 // Copyright (c) 2015 Cesanta Software Limited
 // All rights reserved
 
-#include "mongoose.h"
+#include "../../mongoose.h"
+#ifdef SENSORTRACER
+#include "logging.h"
+#endif
 
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
 
 static void ev_handler(struct mg_connection *nc, int ev, void *p) {
+  printf("ev_handler called with ev = %d\n", ev);
   if (ev == MG_EV_HTTP_REQUEST) {
+    printf("serving request\n");
     mg_serve_http(nc, p, s_http_server_opts);
   }
 }
@@ -16,6 +21,9 @@ int main(void) {
   struct mg_mgr mgr;
   struct mg_connection *nc;
 
+  #ifdef SENSORTRACER
+  sensortracer_init();
+  #endif
   mg_mgr_init(&mgr, NULL);
   nc = mg_bind(&mgr, s_http_port, ev_handler);
 

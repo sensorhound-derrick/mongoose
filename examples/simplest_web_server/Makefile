@@ -1,6 +1,6 @@
 PROG = simplest_web_server
 SOURCES = $(PROG).c ../../mongoose.c
-CFLAGS = -g -W -Wall -I../.. $(CFLAGS_EXTRA)
+CFLAGS = -g -W -Wall -pthread $(CFLAGS_EXTRA)
 
 all: $(PROG)
 
@@ -10,5 +10,10 @@ $(PROG): $(SOURCES)
 $(PROG).exe: $(SOURCES)
 	cl $(SOURCES) /I../.. /MD /Fe$@
 
+cilly: $(SOURCES)
+	mkdir -p build
+	mkdir -p tmp
+	cilly $(CFLAGS) -DSENSORTRACER -I../.. --merge --verbose --dotinytracer --save-temps=build/ -o cilly_mongoose $(SOURCES)
+
 clean:
-	rm -rf *.gc* *.dSYM *.exe *.obj *.o a.out $(PROG)
+	rm -rf *.gc* *.dSYM *.exe *.obj *.o a.out cilly_mongoose build/ tmp/ procmap.txt out.map $(PROG)
